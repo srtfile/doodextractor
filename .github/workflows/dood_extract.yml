@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       url_or_id:
-        description: "DoodStream URL or video ID"
+        description: "DoodStream URL or bare video ID"
         required: true
         default: "https://dood.watch/e/qjw686j2lvvs"
 
@@ -21,14 +21,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: |
-          pip install requests cloudscraper
+        run: pip install requests cloudscraper
 
       - name: Run extractor
-        env:
-          # Store your residential proxy URL in repo Settings → Secrets → Actions
-          # Name: DOOD_PROXY
-          # Value: http://user:pass@host:port   (or socks5://...)
-          DOOD_PROXY: ${{ secrets.DOOD_PROXY }}
+        # Proxies are baked into the script - no secret needed.
+        # If you want to use a different proxy, add DOOD_PROXY as a repo secret.
         run: |
           python dood_extract.py "${{ github.event.inputs.url_or_id }}"
